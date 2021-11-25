@@ -17,7 +17,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.9
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@master
+        uses: actions/checkout@main
       - name: Make release build
         run: |
           cargo build --release
