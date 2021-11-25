@@ -21,7 +21,7 @@ jobs:
       - name: Make release build
         run: |
           cargo build --release
-          target/release/pf --help | grep -q Usage
+          target/release/pf --help | grep -q USAGE
           otool -L target/release/pf
           mkdir ${{runner.temp}}/artifacts
           cp -a target/release/pf ${{runner.temp}}/artifacts/pf-macos
