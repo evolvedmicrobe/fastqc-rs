@@ -21,9 +21,13 @@ jobs:
       - name: Make release build
         run: |
           cargo build --release
+          echo "Build successful"
           target/release/pf --help | grep -q USAGE
+          echo "Help Successful"
           otool -L target/release/pf
+          echo "Otool successful"
           mkdir ${{runner.temp}}/artifacts
+          echo "mkdir successful"
           cp -a target/release/pf ${{runner.temp}}/artifacts/pf-macos
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
