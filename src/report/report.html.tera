@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>fastqc-rs report</title>
+        <title>Peptide Finder Report</title>
         <style>
             {{ "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" | embed_source | safe }}
         </style>
@@ -16,13 +16,13 @@
             {{ "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" | embed_source | safe }}
         </script>
         <script>
-            {{ "https://cdn.jsdelivr.net/npm/vega@5.17.0" | embed_source | safe }}
+            {{ "https://cdn.jsdelivr.net/npm/vega@5.21.0" | embed_source | safe }}
         </script>
         <script>
-            {{ "https://cdn.jsdelivr.net/npm/vega-lite@4.17.0" | embed_source | safe }}
+            {{ "https://cdn.jsdelivr.net/npm/vega-lite@5.2.0" | embed_source | safe }}
         </script>
         <script>
-            {{ "https://cdn.jsdelivr.net/npm/vega-embed@6.12.2" | embed_source | safe }}
+            {{ "https://cdn.jsdelivr.net/npm/vega-embed@6.20.4" | embed_source | safe }}
         </script>
         <style>
             .custom-pill {
@@ -45,11 +45,11 @@
                         <a class="nav-link">version {{ version }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="hhttps://github.com/evolvedmicrobe/fastqc-rs">github</a>
+                        <a class="nav-link" href="https://github.com/evolvedmicrobe/peptide-finder">github</a>
                     </li>
                 </ul>
                 <span class="navbar-text">
-                    created {{ time }}
+                    Created {{ time }}
                 </span>
             </div>
         </nav>
@@ -70,34 +70,38 @@
             </div>
         </row>
         {% endif %}
+       
         <div class="row">
-        <div class="col-2" style="overflow: auto">
-                <table class="table table-sm">
-                    {% for title, dict in ab_data %}
-                        <tr>
-                            <th>
-                                {{ dict.name }}
-                            </th>
-                            <td>
-                                {{ dict.value }}
-                            </td>
-                        </tr>
-                    {% endfor%}
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-3">
+            <div class="col-2">
                 <div class="nav flex-column nav-pills custom-pill" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="padding-left: 15px;">
+                    <a class="nav-link custom-pill active" id="v-pills-metrics-tab" data-toggle="pill" href="#v-pills-metrics" role="tab" aria-controls="v-pills-metrics" aria-selected="true">Metrics</a>
+                    
                     {% for title, dict in plots %}
-                    <a class="nav-link custom-pill {% if loop.first %}active{% endif %}" id="v-pills-{{ dict.short }}-tab" data-toggle="pill" href="#v-pills-{{ dict.short }}" role="tab" aria-controls="v-pills-{{ dict.short }}" aria-selected="{% if loop.first %}true{% else %}false{% endif %}">{{ title }}</a>
+                    <a class="nav-link custom-pill" id="v-pills-{{ dict.short }}-tab" data-toggle="pill" href="#v-pills-{{ dict.short }}" role="tab" aria-controls="v-pills-{{ dict.short }}" aria-selected="{% if loop.first %}true{% else %}false{% endif %}">{{ title }}</a>
                     {% endfor %}
                 </div>
             </div>
             <div class="col-6">
                 <div class="tab-content" id="v-pills-tabContent" style="height: calc(100vh - 175px); overflow: auto">
+                    <div class="tab-pane fade show active" id="v-pills-metrics" role="tabpanel" aria-labelledby="v-pills-metrics-tab">
+                        <div id="metrics-div"></div>
+                         <div style="overflow: auto">
+                            <table class="table table-sm">
+                                {% for title, dict in meta %}
+                                    <tr>
+                                        <th>
+                                            {{ dict.name }}
+                                        </th>
+                                        <td>
+                                            {{ dict.value }}
+                                        </td>
+                                    </tr>
+                                {% endfor%}
+                            </table>
+                        </div>
+                    </div>
                     {% for title, dict in plots %}
-                    <div class="tab-pane fade show {% if loop.first %}active{% endif %}" id="v-pills-{{ dict.short }}" role="tabpanel" aria-labelledby="v-pills-{{ dict.short }}-tab">
+                    <div class="tab-pane fade show" id="v-pills-{{ dict.short }}" role="tabpanel" aria-labelledby="v-pills-{{ dict.short }}-tab">
                         <div id="{{ dict.short }}-div"></div>
                         <script>
                         var {{ dict.short }}Spec = {{ dict.specs }};
@@ -107,22 +111,7 @@
                     </div>
                     {% endfor %}
                 </div>
-            </div>
-            <div class="col-2" style="overflow: auto">
-                <table class="table table-sm">
-                    {% for title, dict in meta %}
-                        <tr>
-                            <th>
-                                {{ dict.name }}
-                            </th>
-                            <td>
-                                {{ dict.value }}
-                            </td>
-                        </tr>
-                    {% endfor%}
-                </table>
-            </div>
-            
+            </div>            
         </div>
     </body>
 </html>

@@ -40,6 +40,7 @@ fn quartiles(hist: &[usize]) -> [f32; 5] {
         let mut acc = 0;
         let mut lo = None;
         for (hi, &count) in hist.iter().enumerate().filter(|(_, &count)| count > 0) {
+            // println!("hi = {}, count = {:?}", hi, count);
             if acc == n && lo.is_some() {
                 let lo = lo.unwrap() as f64;
                 ret[i + 1] = (lo + (hi as f64 - lo) * delta) as f32;
@@ -90,7 +91,7 @@ pub(crate) fn process<P: AsRef<Path> + AsRef<OsStr>>(filename: P) -> Result<(), 
             gc_content[gc * 100 / without_n] += 1;
 
             let mean_read_quality = if let Some(qualities) = seqrec.qual() {
-                qualities.iter().map(|q| (q - 33) as u64).sum::<u64>() / qualities.len() as u64
+                (qualities.iter().map(|q| (q - 33) as u64).sum::<u64>() as f64 / qualities.len() as f64).round() as i16
             } else {
                 0
             };
@@ -125,6 +126,7 @@ pub(crate) fn process<P: AsRef<Path> + AsRef<OsStr>>(filename: P) -> Result<(), 
             broken_read = true;
         }
     }
+
     // Average gc content
     let avg_gc = {
         let (sum, len) = gc_content
@@ -251,27 +253,25 @@ pub(crate) fn process<P: AsRef<Path> + AsRef<OsStr>>(filename: P) -> Result<(), 
     qpp_specs["data"]["values"] = json!(base_per_pos_data);
 
     let plots = json!({
-        "gc content": {"short": "gc", "specs": gc_specs.to_string()},
-        "base sequence quality": {"short": "base", "specs": qpp_specs.to_string()},
-        "sequence quality score": {"short": "qual", "specs": sqc_specs.to_string()},
-        "base sequence content": {"short": "cont", "specs": bpp_specs.to_string()},
-        "read lengths": {"short": "rlen", "specs": rle_specs.to_string()},
+        "GC Content": {"short": "gc", "specs": gc_specs.to_string()},
+        "Base Sequence Quality": {"short": "base", "specs": qpp_specs.to_string()},
+        "Sequence Quality score": {"short": "qual", "specs": sqc_specs.to_string()},
+        "Base Sequence content": {"short": "cont", "specs": bpp_specs.to_string()},
+        "Read Lengths": {"short": "rlen", "specs": rle_specs.to_string()},
     });
 
     let file = Path::new(&filename).file_name().unwrap().to_str().unwrap();
     let meta = json!({
-        "Total Reads": {"name": "total reads", "value": file},
-        "Canonical": {"name": "canonical", "value": "True"},
-        "Total reads": {"name": "total reads", "value": read_count},
-        "Average GC content": {"name": "average GC content", "value": format!("{:.2}", avg_gc)},
-        "Average read length": {"name": "average read length", "value": avg_read_length},
-    });
-
-    let ab_data = json!({
-        "treadds": {"name": "Total Reads", "value": peptide_counter.cnt_total_reads},
+        "File Name": {"name": "File Name", "value": file},
+        "Total reads": {"name": "Total Reads", "value": read_count},
         "valid_avi": {"name": "Valid AVI Tag Suffix (14 bp found)", "value": peptide_counter.cnt_valid_front},
         "valid_suffix": {"name": "Valid Peptide Suffix (GGS after 7 mer)", "value": peptide_counter.cnt_valid_back},
+        "Average GC content": {"name": "Average GC Content", "value": format!("{:.2}%", avg_gc)},
+        "Average read length": {"name": "Average Read Length", "value": format!("{} bp", avg_read_length)},
+        "Canonical": {"name": "Canonical", "value": "True"},
     });
+
+
 
     let mut templates = Tera::default();
     templates.register_filter("embed_source", embed_source);
@@ -279,7 +279,6 @@ pub(crate) fn process<P: AsRef<Path> + AsRef<OsStr>>(filename: P) -> Result<(), 
     let mut context = Context::new();
     context.insert("plots", &plots);
     context.insert("meta", &meta);
-    context.insert("ab_data", &ab_data);
     let local: DateTime<Local> = Local::now();
     context.insert("time", &local.format("%a %b %e %T %Y").to_string());
     context.insert("version", &env!("CARGO_PKG_VERSION"));

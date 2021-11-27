@@ -1,12 +1,12 @@
 [package]
 name = "peptide-reporter"
-version = "0.2.3-alpha.0"
+version = "1.0.0"
 authors = ["Felix Wiegand <fxwiegand@gmail.com>"]
 edition = "2018"
 license = "MIT"
 description = "A fast quality control tool and peptide finder for FASTQ files"
-repository = "https://github.com/evolvedmicrobe/fastqc-rs"
-homepage = "https://fastqc-rs.github.io"
+repository = "https://github.com/evolvedmicrobe/peptide-finder"
+homepage = "https://github.com/evolvedmicrobe/peptide-finder"
 keywords = ["fastq"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -20,7 +20,7 @@ needletail = "0.4.0"
 protein-translate = "0.2.0"
 reqwest = "0.9.0"
 rustc-hash = "1.1.0"
-serde_json = "1.0.62"
+serde_json = {version = "1.0.62", features = ["preserve_order"]}
 tera = "1.6.1"
 
 [dev-dependencies]
