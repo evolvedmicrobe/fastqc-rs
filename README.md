@@ -1,4 +1,4 @@
-# <img src="./img/fastqc-rs-ferris.svg" width=100em alt="fastqc-rs logo" /> fastqc-rs
+# <img src="./img/fastqc-rs-ferris.svg" width=100em alt="fastqc-rs logo" /> peptide finder
 
 ![Rust](https://github.com/fxwiegand/fastqc-rs/workflows/Rust/badge.svg)
 
