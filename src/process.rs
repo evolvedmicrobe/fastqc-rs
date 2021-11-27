@@ -240,8 +240,8 @@ pub(crate) fn process<P: AsRef<Path> + AsRef<OsStr>>(filename: P) -> Result<(), 
         "average": avg,
         "upper": values.get(4).unwrap(),
         "lower": values.get(0).unwrap(),
-        "q1": values.get(1).unwrap(),
-        "q3": values.get(3).unwrap(),
+        "q1": values.get(1).unwrap() -0.25,
+        "q3": values.get(3).unwrap() + 0.25,
         "median":values.get(2).unwrap(),
         }));
     }
